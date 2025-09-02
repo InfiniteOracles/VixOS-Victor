@@ -66,9 +66,9 @@
 #endif
 
 // CHANGE THIS TO BE YOUR PROJECT'S STUFF
-const std::string OSProject = "WireOS";
-const std::string Creator = "By Wire/kercre123";
-const std::string CreatorWebsite = "kerigan.dev";
+const std::string OSProject = "VIXOS";
+const std::string Creator = "By InfiniteOracle";
+const std::string CreatorWebsite = "vector.selfhosts.dev";
 
 // Log options
 #define LOG_CHANNEL    "FaceInfoScreenManager"
@@ -224,7 +224,7 @@ void FaceInfoScreenManager::Init(Anim::AnimContext* context, Anim::AnimationStre
   ADD_SCREEN(Main, Network);
   ADD_SCREEN_WITH_TEXT(ClearUserData, Main, {"CLEAR OUT SOUL?"});
   ADD_SCREEN_WITH_TEXT(ClearUserDataFail, Main, {"UNABLE TO CLEAR SOUL"});
-  ADD_SCREEN_WITH_TEXT(Rebooting, Rebooting, {"Vector will remember that..."});
+  ADD_SCREEN_WITH_TEXT(Rebooting, Rebooting, {"Booting into recovery..."});
   ADD_SCREEN_WITH_TEXT(SelfTest, Main, {"START SELF TEST?"});
   ADD_SCREEN(SelfTestRunning, SelfTestRunning)
   ADD_SCREEN(Network, SensorInfo);
@@ -314,9 +314,6 @@ void FaceInfoScreenManager::Init(Anim::AnimContext* context, Anim::AnimationStre
   SET_ENTER_ACTION(Main, mainEnterFcn);
 
   ADD_MENU_ITEM(Main, "EXIT", None);
-#if ENABLE_SELF_TEST
-  ADD_MENU_ITEM(Main, IsXray() ? "TEST" : "SELF TEST", SelfTest);
-#endif
   ADD_MENU_ITEM(Main, IsXray() ? "CLEAR" : "CLEAR OUT SOUL", ClearUserData);
 
   // === Self test screen ===
@@ -366,7 +363,14 @@ void FaceInfoScreenManager::Init(Anim::AnimContext* context, Anim::AnimationStre
   ADD_MENU_ITEM(Recovery, "CONTINUE", None);
   DISABLE_TIMEOUT(Recovery);
 
-    
+  // === Recovery ===
+  FaceInfoScreen::MenuItemAction recovery = []() {
+    execl("/sbin/reboot", "reboot", "recovery", (char*)nullptr);
+    return ScreenName::Rebooting;
+  };
+
+  ADD_MENU_ITEM_WITH_ACTION(Main, IsXray() ? "RECOVERY" : "RECOVERY", recovery);
+
   // === Camera screen ===
   FaceInfoScreen::ScreenAction cameraEnterAction = [this]() {
     StreamCameraImages m;
