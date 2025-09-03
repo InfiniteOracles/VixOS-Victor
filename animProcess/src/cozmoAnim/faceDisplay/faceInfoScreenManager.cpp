@@ -335,7 +335,6 @@ void FaceInfoScreenManager::Init(Anim::AnimContext* context, Anim::AnimationStre
       LOG_WARNING("FaceInfoScreenManager.ClearUserData.Failed", "");
       return ScreenName::ClearUserDataFail;
     }
-
     // Reboot robot for clearing to take effect
     LOG_INFO("FaceInfoScreenManager.ClearUserData.Rebooting", "");
     this->Reboot();
